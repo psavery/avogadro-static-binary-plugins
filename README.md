@@ -26,7 +26,12 @@
 - Confirm the Binary is Static
   - Visual Studio's `dumpbin.exe` Program Works
     - Start up Visual Studio CMD environment and run `dumpbin /dependents` on the executable
-    - Desired output:
+    - Desired output (or something similar):
+      - ```
+        Image has the following dependencies:
+          KERNEL32.dll
+        ```
+      - Note that the binary may depend on msvc runtime libraries, but it must be done with caution. It can limit compatibility among windows versions.
 ### Mac OS X
 - Things to Consider
   - Apple does not allow static linking to the standard libraries, but static linking to other programs is allowed
@@ -39,10 +44,16 @@
       - `-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.x`
         - Uses `-mmacosx-version-min=10x` underneath
   - `-static` is not supported and will fail to compile
+    - `-static-libgcc` and `-static-libgfortran` are possibilities, though
 - Confirm the Binary is Static
   - Apple's `otool` Program Works
     - Start up terminal and run `otool -L` on the executable
-    - Desired output:
+    - Desired output (or something similar):
+      - ```
+        /System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)
+        /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1213.0.0)
+        ```
+      - Note that the binary may depend on c++ (and others such as gfortran) runtime libraries, but it must be done with caution. It can limit compatibility among OS X versions. Prefer compiling on an older operating system if this route is taken.
 ### Linux
 - Things to Consider
   - Prefer Build on Older Operating System (Virtual Machine is Possible)
@@ -55,6 +66,7 @@
   - Linux's `ldd` Program Works
     - Start up terminal and run `ldd` on the executable
     - Desired output: `	not a dynamic executable``
+    - Note that the binary may depend on c++ (and others such as gfortran) runtime libraries, but it must be done with caution. Prefer compiling on an older operating system if this route is taken.
 
 ## Examples
 ### YAeHMOP
