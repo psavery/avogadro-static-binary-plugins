@@ -15,11 +15,12 @@
   - All desired functionality must be available in the binary via `stdin` and `stdout` or some other i/o
   - Extra steps must be taken to make sure the binary will work on all target operating systems
   - Will use more disk space than linked plugins
-    - For instance, each plugin will have its own copy of the language's standard library
+    - For instance, each plugin might have its own copy of the language's standard library
 
 ## Requirements
   - All desired functionality must be available in the binary via `stdin` and `stdout` or some other i/o
     - Open Babel is a great example
+    - One can also write their own wrapper for a program that uses `stdin` and `stdout` and distribute that. [GenXrdPattern](https://github.com/psavery/genxrdpattern) is an example of this.
     
 ## Guide
 ### Windows
@@ -34,16 +35,16 @@
       - Note that the binary may depend on msvc runtime libraries, but it must be done with caution. It can limit compatibility among windows versions.
 ### Mac OS X
 - Things to Consider
-  - Apple does not allow static linking to the standard libraries, but static linking to other programs is allowed
+  - For `AppleClang`, Apple does not allow static linking to the standard libraries, but static linking to other libraries is allowed
   - Need to choose a specific Mac OS X version as the minimum version to support
 - Compiler Flags
   - Choose a Mac OS X version as the Minimum Version
     - `-mmacosx-version-min=10.x`
-      - Use for CFLAGS, CXXFLAGS, and LDFLAGS
+      - Set this flag in the following environment variables: CFLAGS, CXXFLAGS, and LDFLAGS
     - CMake Flags
       - `-DCMAKE_OSX_DEPLOYMENT_TARGET:STRING=10.x`
         - Uses `-mmacosx-version-min=10x` underneath
-  - `-static` is not supported and will fail to compile
+  - `-static` for `AppleClang` is not supported and will fail to compile
     - `-static-libgcc` and `-static-libgfortran` are possibilities, though
 - Confirm the Binary is Static
   - Apple's `otool` Program Works
@@ -69,22 +70,25 @@
     - Note that the binary may depend on c++ (and others such as gfortran) runtime libraries, but it must be done with caution. Prefer compiling on an older operating system if this route is taken.
 
 ## Examples
-### YAeHMOP
-
-### GenXRDPattern
+### [YAeHMOP](https://github.com/greglandrum/yaehmop)
+- Reason for static binary: Difficult to build within Avogadro due to needed fortran compiler or `f2c` library.
+  - It is also preferred, for speed, to build it linked with `blas` and `lapack`, which would add extra dependencies to Avogadro if an external binary were not used.
+### [GenXRDPattern](https://github.com/psavery/genxrdpattern)
+- Reason for static binary: Links to [ObjCryst++](https://github.com/vincefn/objcryst), which has a GPLv2 license.
 
 ## Alternatives
 - Python/Java
   - Pros:
-    - One plugin works for all operating systems
+    - One plugin should work for all operating systems
   - Cons:
-    - Requires user to have python/java installed
+    - Requires user to have python/java installed, or packaging python/java with the program.
 - Web API
   - Pros:
     - Works for all operating systems
     - No extra user installations required
   - Cons:
     - Requires users to have an internet connection
+    - Requires an active server that may need to be maintained
 - Docker
   - Pros:
     - One docker image works for all operating sytems
