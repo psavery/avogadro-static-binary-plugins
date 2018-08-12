@@ -80,6 +80,11 @@
     - If there are dependencies listed, ensure every dependency is distributed with all target linux operating systems.
     - Note that the binary may depend on c++ (and others such as gfortran) runtime libraries, but it must be done with caution. Prefer compiling on an older operating system if this route is taken.
 
+## On the Avogadro2 Side
+- Need to write a Qt plugin to create the input, run the external binary, and read the output.
+  - Can use QProcess to run the program.
+  - An example can be found [here](https://github.com/OpenChemistry/avogadrolibs/blob/master/avogadro/qtplugins/plotxrd/plotxrd.cpp#L157)
+
 ## Examples
 ### [YAeHMOP](https://github.com/greglandrum/yaehmop)
 - Reason for static binary: Difficult to build within Avogadro due to needed fortran compiler or `f2c` library.
